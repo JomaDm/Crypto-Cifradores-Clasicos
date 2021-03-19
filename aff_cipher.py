@@ -51,7 +51,7 @@ def decrypt (EN,key_inv,ciphertext):
     
     #print (''.join(desencrypted))
     
-    = ''
+
     
     write_file(cipher_text, file_name= 'decrypted_aff.txt')    
 decrypt (n['EN'],[15,9],'olqrxbeml')
