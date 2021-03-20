@@ -1,4 +1,5 @@
-
+# TODO : Lectura de mensaje por archivo
+# TODO : Guardar archivo cifrado (extension .vig)
 class VigenereCipher():
     alfabetos = {
         'EN': ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
@@ -21,7 +22,7 @@ class VigenereCipher():
         # Se generan pares para cifrar [msg,key]
         # HolaHo
         # asdasd
-        # [['H','a'],['o','s']]
+        # [['H','a'],['o','s']] ...
         for i, e in enumerate(msg):
             pairs.append([e, key[i % lenght_key]])
 
