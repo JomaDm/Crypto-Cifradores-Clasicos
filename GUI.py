@@ -17,8 +17,7 @@ class GUI():
     frame = None
 
     # ? Variables sin usar?
-    path_encrypt = ""
-    path_key = ""
+    path_message = ""
     path_file_to_Decrypt = ""
 
     generate_keys = False

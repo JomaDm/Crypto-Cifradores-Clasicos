@@ -1,4 +1,5 @@
 from file_manager import *
+import random as rand
 
 
 class VigenereCipher():
@@ -12,6 +13,16 @@ class VigenereCipher():
 
     def __init__(self):
         print('Initialized Cipher')
+
+    def generateKey(self, length=10):
+        if self.alfabeto != []:
+            key = ""
+            for _ in range(length):
+                key += self.alfabeto[rand.randint(0, len(self.alfabeto))]
+            return key
+        else:
+            print('Alphabet not specified')
+            return None
 
     def setAlfabeto(self, Abreviatura_alfabeto='EN'):
         self.alfabeto = self.alfabetos[Abreviatura_alfabeto]
@@ -79,6 +90,8 @@ if __name__ == '__main__':
 
     msg = 'denialofservice'
     key = 'forget'
+    print(cipher.generateKey())
+
     print(msg)
     encrypted_msg = cipher.encrypt(key, msg)
 

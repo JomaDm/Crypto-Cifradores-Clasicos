@@ -1,5 +1,6 @@
 from file_manager import *
 from validations_aff import validate_key, modinv
+import random as rand
 
 
 class AffineCipher():
@@ -10,6 +11,21 @@ class AffineCipher():
     }
 
     alfabeto = []
+
+    def generateKey(self):
+        if self.alfabeto != []:
+            alfabeto_length = len(self.alfabeto)
+            key_mult = rand.randint(0, alfabeto_length)
+            while not validate_key(key_mult, alfabeto_length):
+                print("Generating key...")
+                key_mult = rand.randint(0, alfabeto_length)
+
+            key_acc = rand.randint(1, alfabeto_length)
+
+            return [key_mult, key_acc]
+        else:
+            print('Alphabet not specified')
+            return None
 
     def setAlfabeto(self, Abreviatura_alfabeto='EN'):
         self.alfabeto = self.alfabetos[Abreviatura_alfabeto]
@@ -78,5 +94,7 @@ if __name__ == '__main__':
 
     cipher = AffineCipher()
     cipher.setAlfabeto('EN')
+    keys = cipher.generateKey()
+    print(keys)
     encrypted = cipher.encrypt(keys, message)
     decrypted = cipher.decrypt(keys, encrypted)
