@@ -1,49 +1,82 @@
 from file_manager import *
+from validations_aff import validate_key, modinv
 
 
-n = {'EN': ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
-            'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'],
-     'ES': ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
-            'm', 'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
-     }
+class AffineCipher():
 
+    alfabetos = {
+        'EN': ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',    'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'],
+        'ES': ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'ñ', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+    }
 
-def encrypt(EN, key, message):
-    mult = key[0]
-    cor = key[1]
+    alfabeto = []
 
-    encrypted = []
+    def setAlfabeto(self, Abreviatura_alfabeto='EN'):
+        self.alfabeto = self.alfabetos[Abreviatura_alfabeto]
 
-    # Obtiene el indice del mensaje
-    for e in message:
+    def readFile(self, file="message.txt"):
+        return open_read_file(file)
 
-        formula = (mult*(EN.index(e)) + cor) % len(EN)
-        encrypted.append(EN[formula])  # para agregar un elemento al final
-        #print ('letra: ',e,EN.index(e))
-    # print(encrypted)
-    cipher_text = ''.join(encrypted)
+    def writeFile(self, encrypted_msg, file="message.aff"):
+        write_file(encrypted_msg, file_name=file)
 
-    write_file(cipher_text, file_name='encrypted_aff.txt')
+    def validateKey(self, key):
+        return validate_key(key, len(self.alfabeto))
 
+    def encrypt(self, keys, message):
+        if self.alfabeto != []:
+            if self.validateKey(keys[0]):
+                mult = keys[0]
+                cor = keys[1]
 
-def decrypt(EN, key_inv, ciphertext):
+                encrypted = []
 
-    mult_in = key_inv[0]
-    cor_in = key_inv[1]
+                # Obtiene el indice del mensajepi
+                for e in message:
 
-    desencrypted = []
+                    formula = (mult*(self.alfabeto.index(e)) +
+                               cor) % len(self.alfabeto)
+                    # para agregar un elemento al final
+                    encrypted.append(self.alfabeto[formula])
+                    #print ('letra: ',e,EN.index(e))
+                # print(encrypted)
+                cipher_text = ''.join(encrypted)
+                print(cipher_text)
+                return cipher_text
+            else:
+                print('Key not valid')
+                return None
+        else:
+            print('Alphabet not specified')
+            return None
 
-    for e in ciphertext:
+    def decrypt(self, keys, ciphertext):
+        if self.alfabeto != []:
+            mult_in = modinv(keys[0], len(self.alfabeto))
+            cor_in = len(self.alfabeto) - keys[1]
 
-        formula_inv = (mult_in*(EN.index(e)+cor_in)) % len(EN)
-        desencrypted.append(EN[formula_inv])
+            desencrypted = []
 
-    #print (''.join(desencrypted))
-    plain_text = ''.join(desencrypted)
-    write_file(plain_text, file_name='decrypted_aff.txt')
+            for e in ciphertext:
+
+                formula_inv = (mult_in*(self.alfabeto.index(e)+cor_in)
+                               ) % len(self.alfabeto)
+                desencrypted.append(self.alfabeto[formula_inv])
+
+            plain_text = ''.join(desencrypted)
+            print(plain_text)
+
+            return plain_text
+        else:
+            print('Alphabet not specified')
+            return None
 
 
 if __name__ == '__main__':
     message = 'holamundo'
-    encrypt(n['EN'], [7, 17], message)
-    decrypt(n['EN'], [15, 9], 'olqrxbeml')
+    keys = [7, 17]
+
+    cipher = AffineCipher()
+    cipher.setAlfabeto('EN')
+    encrypted = cipher.encrypt(keys, message)
+    decrypted = cipher.decrypt(keys, encrypted)

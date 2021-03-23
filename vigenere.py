@@ -1,5 +1,6 @@
-# TODO : Lectura de mensaje por archivo
-# TODO : Guardar archivo cifrado (extension .vig)
+from file_manager import *
+
+
 class VigenereCipher():
     alfabetos = {
         'EN': ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
@@ -14,6 +15,12 @@ class VigenereCipher():
 
     def setAlfabeto(self, Abreviatura_alfabeto='EN'):
         self.alfabeto = self.alfabetos[Abreviatura_alfabeto]
+
+    def readFile(self, file="message.txt"):
+        return open_read_file(file)
+
+    def writeFile(self, encrypted_msg, file="message.vig"):
+        write_file(encrypted_msg, file_name=file)
 
     def createPairs(self, key, msg):
         pairs = []

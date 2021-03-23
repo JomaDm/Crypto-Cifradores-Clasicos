@@ -1,5 +1,7 @@
 from tkinter import *
 from tkinter import filedialog
+from vigenere import VigenereCipher
+from aff_cipher import AffineCipher
 
 
 class GUI():
@@ -119,11 +121,11 @@ class GUI():
 
     def run(self):
         self.window.mainloop()
-    
+
     # TODO : Selecion del cifrado
     def selectButton_Cipher(self, option):
         print("Opcion selecionada:", option)
-        
+
     def selectButton_function(self, option):
         if(option == 1 and self.last_option != option):
             # Encrypt
@@ -147,7 +149,7 @@ class GUI():
         for i in self.dynamic_widgets:
             i.destroy()
 
-    #TODO: Input para llave y seleccion de archivo
+    # TODO: Input para llave y seleccion de archivo
     def generateDecryptWidgets(self):
         self.destroyDynamicWidgets()
         label_space = Label(self.frame,
@@ -291,6 +293,7 @@ class GUI():
         if(self.path_encrypt != "" and self.generate_keys):
             pass
     #TODO: decifrar
+
     def decrypt(self):
         if(self.choose_fileD and self.choose_key):
             pass
