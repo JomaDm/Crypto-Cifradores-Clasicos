@@ -12,6 +12,9 @@ class AffineCipher():
 
     alfabeto = []
 
+    def __init__(self):
+        print('Initialized Affine Cipher')
+
     def generateKey(self):
         if self.alfabeto != []:
             alfabeto_length = len(self.alfabeto)

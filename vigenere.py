@@ -12,7 +12,7 @@ class VigenereCipher():
     alfabeto = []
 
     def __init__(self):
-        print('Initialized Cipher')
+        print('Initialized Vigenere Cipher')
 
     def generateKey(self, length=10):
         if self.alfabeto != []:

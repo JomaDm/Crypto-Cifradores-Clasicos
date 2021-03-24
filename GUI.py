@@ -9,7 +9,7 @@ from aff_cipher import AffineCipher
 class GUI():
 
     HEIGHT = 300
-    WIDTH = 500
+    WIDTH = 550
     background_color = "#23262E"
     white = "#fff"
     select_color = "#7A5FEE"
@@ -19,6 +19,7 @@ class GUI():
     frame = None
     cipher = None
     selected = False
+    option_cipher = 0
 
     path_message = ""
     plaintext = ""
@@ -89,24 +90,25 @@ class GUI():
     def selectButton_Cipher(self, option):
         self.destroyDynamicWidgets()
         # print(option)
+        # print("Option:", option, "Selected:", self.selected)
+        if(option == 1):
+            self.cipher = VigenereCipher()
+        elif(option == 2):
+            self.cipher = AffineCipher()
         if(option != 0 and not self.selected):
-            if(option == 1):
-                self.cipher = VigenereCipher()
-            elif(option == 2):
-                self.cipher = AffineCipher()
-
-            print("Option:", option, "Selected:", self.selected)
             self.generateFunctionWidgets()
             self.selected = True
         self.last_option = option
+        self.option_cipher = option
 
     def selectButton_function(self, option):
+        self.destroyDynamicWidgets()
         if(option == 1):
             # Encrypt
-            self.generateEncryptWidgets(option)
+            self.generateEncryptWidgets()
 
         elif(option == 2):
-            self.generateDecryptWidgets(option)
+            self.generateDecryptWidgets()
             # Decrypt
 
         self.last_option = option
@@ -116,11 +118,13 @@ class GUI():
         input_entry.insert(0, text)
 
     def destroyDynamicWidgets(self):
+        self.path_message = ""
+        self.plaintext = ""
         for i in self.dynamic_widgets:
             i.destroy()
 
     def generateFunctionWidgets(self):
-        # self.destroyDynamicWidgets()
+        self.destroyDynamicWidgets()
         label_space = Label(self.frame,
                             text="",
                             bg=self.background_color
@@ -176,15 +180,16 @@ class GUI():
         self.dynamic_widgets.append(label_space)
 
     def set_alphabet(self, evnt, option):
-        print(option)
+        # print(option)
         if(option == 0):
             self.cipher.setAlfabeto('EN')
         elif(option == 1):
             self.cipher.setAlfabeto('ES')
 
     def generateKey_functionVig(self, input_widget):
-
+        # print("V")
         key = self.cipher.generateKey()
+        print(key)
         if(key != None):
             self.setInputText(input_widget, key)
         else:
@@ -192,12 +197,115 @@ class GUI():
                 message="Alphabet not especified", title="Error"
             )
 
-    def selectPlainText(self):
+    def generateKey_functionAff(self, input_corr, input_mult):
+        # print("A")
+        keys = self.cipher.generateKey()
+        print(keys)
+
+        if(keys != None):
+            print(keys)
+            self.setInputText(input_mult, str(keys[0]))
+            self.setInputText(input_corr, str(keys[1]))
+        else:
+            messagebox.showinfo(
+                message="Alphabet not especified", title="Error"
+            )
+
+    def selectText(self):
+        self.pathFile()
         self.plaintext = self.cipher.readFile(self.path_message)
 
-    def encryptWidgetsVig(self):
+    def encryptWidgetsAff(self):
+        self.destroyDynamicWidgets()
+        self.addSpaceWidget()
         comboboxAlfabeto = ttk.Combobox(self.frame, state="readonly")
         comboboxAlfabeto['values'] = ['English', 'Spanish']
+        comboboxAlfabeto.current(0)
+        self.set_alphabet(None, 0)
+        comboboxAlfabeto.pack()
+        comboboxAlfabeto.bind(
+            "<<ComboboxSelected>>", lambda event: self.set_alphabet(event, comboboxAlfabeto.current()))
+        self.dynamic_widgets.append(comboboxAlfabeto)
+
+        label_key_a = Label(self.frame,
+                            text="Key shifter",
+                            fg=self.white,
+                            bg=self.background_color,
+                            font=("Arial", 14)
+                            )
+        label_key_a.pack()
+        self.dynamic_widgets.append(label_key_a)
+
+        input_key_corr = Entry(self.frame)
+        input_key_corr.pack()
+        self.dynamic_widgets.append(input_key_corr)
+
+        self.addSpaceWidget()
+
+        label_key_b = Label(self.frame,
+                            text="Key multiplicative",
+                            fg=self.white,
+                            bg=self.background_color,
+                            font=("Arial", 14)
+                            )
+        label_key_b.pack()
+        self.dynamic_widgets.append(label_key_b)
+
+        input_key_mult = Entry(self.frame)
+        input_key_mult.pack()
+        self.dynamic_widgets.append(input_key_mult)
+
+        self.addSpaceWidget()
+
+        generateKeyBtn = Button(self.frame,
+                                text="generate",
+                                bd=0,
+                                fg=self.white,
+                                bg=self.select_color,
+                                font=("Arial", 12),
+                                command=lambda: self.generateKey_functionAff(
+                                    input_key_corr, input_key_mult
+                                )
+                                )
+        generateKeyBtn.pack()
+        self.dynamic_widgets.append(generateKeyBtn)
+
+        self.addSpaceWidget()
+
+        File = Button(self.frame,
+                      text="Message File",
+                      bd=0,
+                      fg=self.white,
+                      bg=self.select_color,
+                      font=("Arial", 12),
+                      command=lambda: self.selectText()
+                      )
+        File.pack()
+        self.dynamic_widgets.append(File)
+
+        self.addSpaceWidget()
+
+        EncryptBtn = Button(self.frame,
+                            text="Encrypt",
+                            bd=0,
+                            fg=self.white,
+                            bg=self.select_color,
+                            font=("Arial", 12),
+                            command=lambda: self.encrypt(
+                                [int(input_key_mult.get()), int(input_key_corr.get())])
+                            )
+        EncryptBtn.pack()
+        self.dynamic_widgets.append(EncryptBtn)
+
+        self.addSpaceWidget()
+
+    def encryptWidgetsVig(self):
+        self.destroyDynamicWidgets()
+        self.addSpaceWidget()
+        comboboxAlfabeto = ttk.Combobox(self.frame, state="readonly")
+        comboboxAlfabeto['values'] = ['English', 'Spanish']
+        comboboxAlfabeto.current(0)
+        self.set_alphabet(None, 0)
         comboboxAlfabeto.pack()
         comboboxAlfabeto.bind(
             "<<ComboboxSelected>>", lambda event: self.set_alphabet(event, comboboxAlfabeto.current()))
@@ -231,162 +339,199 @@ class GUI():
         generateKeyBtn.pack()
         self.dynamic_widgets.append(generateKeyBtn)
 
+        self.addSpaceWidget()
+
         File = Button(self.frame,
-                      text="File",
+                      text="Message File",
                       bd=0,
                       fg=self.white,
                       bg=self.select_color,
                       font=("Arial", 12),
-                      command=lambda: self.selectPlainText()
+                      command=lambda: self.selectText()
                       )
         File.pack()
         self.dynamic_widgets.append(File)
 
-    def generateEncryptWidgets(self, option):
-        self.destroyDynamicWidgets()
+        self.addSpaceWidget()
+
+        EncryptBtn = Button(self.frame,
+                            text="Encrypt",
+                            bd=0,
+                            fg=self.white,
+                            bg=self.select_color,
+                            font=("Arial", 12),
+                            command=lambda: self.encrypt(input_key.get())
+                            )
+        EncryptBtn.pack()
+        self.dynamic_widgets.append(EncryptBtn)
 
         self.addSpaceWidget()
-        if(option == 1):
+
+    def generateEncryptWidgets(self):
+        self.destroyDynamicWidgets()
+        print(self.option_cipher)
+        self.addSpaceWidget()
+        if(self.option_cipher == 1):
             self.encryptWidgetsVig()
-        elif(option == 2):
-            pass
+        elif(self.option_cipher == 2):
+            self.encryptWidgetsAff()
 
-    # TODO: Input para llave y seleccion de archivo
-
-    def generateDecryptWidgets(self, option):
+    def decryptWidgetsVig(self):
         self.destroyDynamicWidgets()
         self.addSpaceWidget()
+        comboboxAlfabeto = ttk.Combobox(self.frame, state="readonly")
+        comboboxAlfabeto['values'] = ['English', 'Spanish']
+        comboboxAlfabeto.current(0)
+        self.set_alphabet(None, 0)
+        comboboxAlfabeto.pack()
+        comboboxAlfabeto.bind(
+            "<<ComboboxSelected>>", lambda event: self.set_alphabet(event, comboboxAlfabeto.current()))
+        self.dynamic_widgets.append(comboboxAlfabeto)
 
-        chooseKeysBtn = Button(self.frame,
-                               text="Key",
-                               bd=0,
-                               fg=self.white,
-                               bg=self.select_color,
-                               font=("Arial", 12),
-                               command=lambda: self.pathKeyDecrypt()
-                               )
-        chooseKeysBtn.pack()
-        self.dynamic_widgets.append(chooseKeysBtn)
+        label_key = Label(self.frame,
+                          text="Key",
+                          fg=self.white,
+                          bg=self.background_color,
+                          font=("Arial", 14)
+                          )
+        label_key.pack()
+        self.dynamic_widgets.append(label_key)
 
-        self.addSpaceWidget()
-
-        EncryptedfileBtn = Button(self.frame,
-                                  text="Encrypted File",
-                                  bd=0,
-                                  fg=self.white,
-                                  bg=self.select_color,
-                                  font=("Arial", 12),
-                                  command=lambda: self.pathFileDecrypt()
-                                  )
-        EncryptedfileBtn.pack()
-        self.dynamic_widgets.append(EncryptedfileBtn)
+        input_key = Entry(self.frame)
+        input_key.pack()
+        self.dynamic_widgets.append(input_key)
 
         self.addSpaceWidget()
-
-        encryptButton = Button(self.frame,
-                               height=1,
-                               text="Decrypt",
-                               bd=0,
-                               fg=self.white,
-                               bg=self.select_color,
-                               font=("Arial", 12),
-                               command=lambda: self.decrypt()
-                               )
-        encryptButton.pack()
-        self.dynamic_widgets.append(encryptButton)
-
-    # ? Metodo sin usar?
-    def pathKeyDecrypt(self):
-        self.path_key = filedialog.askopenfilename()
-        self.choose_key = True
-        print("Archivo seleccionado")
-
-    # ? Metodo sin usar?
-    def pathFileDecrypt(self):
-        self.path_file_to_Decrypt = filedialog.askopenfilename()
-        self.choose_fileD = True
-        print("Archivo seleccionado")
-
-    # ? Metodo sin usar?
-    """ def generateEncryptWigets(self):
-        self.destroyDynamicWidgets()
-        label_space = Label(self.frame,
-                            text="",
-                            bg=self.background_color
-                            )
-        label_space.pack()
-        self.dynamic_widgets.append(label_space)
-
-        generateKeysBtn = Button(self.frame,
-                                 text="Generate Keys",
-                                 bd=0,
-                                 fg=self.white,
-                                 bg=self.select_color,
-                                 font=("Arial", 12),
-                                 command=lambda: self.generateKeysFunction()
-                                 )
-        generateKeysBtn.pack()
-        self.dynamic_widgets.append(generateKeysBtn)
-
-        label_space = Label(self.frame,
-                            text="",
-                            bg=self.background_color
-                            )
-        label_space.pack()
-        self.dynamic_widgets.append(label_space)
 
         File = Button(self.frame,
-                      text="File",
+                      text="Encrypted File",
                       bd=0,
                       fg=self.white,
                       bg=self.select_color,
                       font=("Arial", 12),
-                      command=lambda: self.pathFileEncrypt()
+                      command=lambda: self.selectText()
                       )
         File.pack()
         self.dynamic_widgets.append(File)
-        label_space = Label(self.frame,
-                            text="",
-                            bg=self.background_color
+
+        self.addSpaceWidget()
+
+        EncryptBtn = Button(self.frame,
+                            text="Decrypt",
+                            bd=0,
+                            fg=self.white,
+                            bg=self.select_color,
+                            font=("Arial", 12),
+                            command=lambda: self.decrypt(
+                                input_key.get(), self.path_message)
                             )
-        label_space.pack()
-        self.dynamic_widgets.append(label_space)
-        encryptButton = Button(self.frame,
-                               height=1,
-                               text="Encrypt",
-                               bd=0,
-                               fg=self.white,
-                               bg=self.select_color,
-                               font=("Arial", 12),
-                               command=lambda: self.encrypt()
-                               )
-        encryptButton.pack()
-        self.dynamic_widgets.append(encryptButton) """
+        EncryptBtn.pack()
+        self.dynamic_widgets.append(EncryptBtn)
 
-    # ? Metodo sin usar?
-    def pathFileEncrypt(self):
-        self.path_encrypt = filedialog.askopenfilename()
-        self.choose_file = True
-        print("Archivo seleccionado")
+        self.addSpaceWidget()
 
-    # TODO: Cambiar cifrado y decifrado según el cifrador escogido
-    def generateKeysFunction(self):
-        pass
+    def decryptWidgetsAff(self):
+        self.destroyDynamicWidgets()
+        self.addSpaceWidget()
+        comboboxAlfabeto = ttk.Combobox(self.frame, state="readonly")
+        comboboxAlfabeto['values'] = ['English', 'Spanish']
+        comboboxAlfabeto.current(0)
+        self.set_alphabet(None, 0)
+        comboboxAlfabeto.pack()
+        comboboxAlfabeto.bind(
+            "<<ComboboxSelected>>", lambda event: self.set_alphabet(event, comboboxAlfabeto.current()))
+        self.dynamic_widgets.append(comboboxAlfabeto)
+
+        label_key_a = Label(self.frame,
+                            text="Key shifter",
+                            fg=self.white,
+                            bg=self.background_color,
+                            font=("Arial", 14)
+                            )
+        label_key_a.pack()
+        self.dynamic_widgets.append(label_key_a)
+
+        input_key_corr = Entry(self.frame)
+        input_key_corr.pack()
+        self.dynamic_widgets.append(input_key_corr)
+
+        self.addSpaceWidget()
+
+        label_key_b = Label(self.frame,
+                            text="Key multiplicative",
+                            fg=self.white,
+                            bg=self.background_color,
+                            font=("Arial", 14)
+                            )
+        label_key_b.pack()
+        self.dynamic_widgets.append(label_key_b)
+
+        input_key_mult = Entry(self.frame)
+        input_key_mult.pack()
+        self.dynamic_widgets.append(input_key_mult)
+
+        self.addSpaceWidget()
+
+        File = Button(self.frame,
+                      text="Encrypted File",
+                      bd=0,
+                      fg=self.white,
+                      bg=self.select_color,
+                      font=("Arial", 12),
+                      command=lambda: self.selectText()
+                      )
+        File.pack()
+        self.dynamic_widgets.append(File)
+
+        self.addSpaceWidget()
+
+        EncryptBtn = Button(self.frame,
+                            text="Decrypt",
+                            bd=0,
+                            fg=self.white,
+                            bg=self.select_color,
+                            font=("Arial", 12),
+                            command=lambda: self.decrypt(
+                                [int(input_key_mult.get()), int(input_key_corr.get())], self.path_message)
+                            )
+        EncryptBtn.pack()
+        self.dynamic_widgets.append(EncryptBtn)
+
+        self.addSpaceWidget()
+
+    def generateDecryptWidgets(self):
+        self.destroyDynamicWidgets()
+        print(self.option_cipher)
+        self.addSpaceWidget()
+        if(self.option_cipher == 1):
+            self.decryptWidgetsVig()
+        elif(self.option_cipher == 2):
+            self.decryptWidgetsAff()
 
     def pathFile(self):
         self.path_message = filedialog.askopenfilename()
         self.choose_file = True
         print("Archivo seleccionado")
 
-    # TODO: cifrar
-    def encrypt(self):
+    def encrypt(self, keys):
+        encrypted = self.cipher.encrypt(keys, self.plaintext)
+        file_name = "message_encrypted"
+        if self.option_cipher == 1:
+            file_name += ".vig"
+        elif self.option_cipher == 2:
+            file_name += ".aff"
+        self.cipher.writeFile(encrypted, file=file_name)
 
-        pass
     # TODO: decifrar
 
-    def decrypt(self):
-
-        pass
+    def decrypt(self, key, path):
+        decrypted = self.cipher.decrypt(key, self.cipher.readFile(path))
+        file_name = "message_decrypted"
+        if self.option_cipher == 1:
+            file_name += ".vig"
+        elif self.option_cipher == 2:
+            file_name += ".aff"
+        self.cipher.writeFile(decrypted, file=file_name)
 
 
 if __name__ == "__main__":
