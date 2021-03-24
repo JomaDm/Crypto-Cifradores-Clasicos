@@ -515,12 +515,17 @@ class GUI():
 
     def encrypt(self, keys):
         encrypted = self.cipher.encrypt(keys, self.plaintext)
-        file_name = "message_encrypted"
-        if self.option_cipher == 1:
-            file_name += ".vig"
-        elif self.option_cipher == 2:
-            file_name += ".aff"
-        self.cipher.writeFile(encrypted, file=file_name)
+        if(encrypted != None):
+            file_name = "message_encrypted"
+            if self.option_cipher == 1:
+                file_name += ".vig"
+            elif self.option_cipher == 2:
+                file_name += ".aff"
+            self.cipher.writeFile(encrypted, file=file_name)
+        else:
+            messagebox.showinfo(
+                message="Error with the key", title="Error"
+            )
 
     # TODO: decifrar
 
