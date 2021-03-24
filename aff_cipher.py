@@ -1,4 +1,4 @@
-from file_manager import *
+from file_manager import open_read_file, write_file
 from validations_aff import validate_key, modinv
 import random as rand
 
@@ -15,7 +15,7 @@ class AffineCipher():
     def generateKey(self):
         if self.alfabeto != []:
             alfabeto_length = len(self.alfabeto)
-            key_mult = rand.randint(0, alfabeto_length)
+            key_mult = rand.randint(0, alfabeto_length-1)
             while not validate_key(key_mult, alfabeto_length):
                 print("Generating key...")
                 key_mult = rand.randint(0, alfabeto_length)

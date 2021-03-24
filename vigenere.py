@@ -1,4 +1,4 @@
-from file_manager import *
+from file_manager import open_read_file, write_file
 import random as rand
 
 
@@ -18,7 +18,7 @@ class VigenereCipher():
         if self.alfabeto != []:
             key = ""
             for _ in range(length):
-                key += self.alfabeto[rand.randint(0, len(self.alfabeto))]
+                key += self.alfabeto[rand.randint(0, len(self.alfabeto)-1)]
             return key
         else:
             print('Alphabet not specified')
