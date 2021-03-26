@@ -37,6 +37,11 @@ def modinv(a, m):
 
 
 if __name__ == '__main__':
+    print("a=5 n=30 =", gcd_euclides(5, 30))
+    print("a=97 n=239 =", gcd_euclides(97, 239))
+    print("a=11111 n=12345 = ", gcd_euclides(11111, 12345))
+    print("a=13 n=99991 =", gcd_euclides(13, 99991))
+    print("a=10009 n=104729 =", gcd_euclides(10009, 104729))
 
-    for i in range(26):
-        print(f"from i: {i}  {validate_key(i, 26)} {modinv(i, 26)}")
+    # for i in range(26):
+    #     print(f"from i: {i}  {validate_key(i, 26)} {modinv(i, 26)}")
