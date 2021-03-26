@@ -180,11 +180,13 @@ class GUI():
         self.dynamic_widgets.append(label_space)
 
     def set_alphabet(self, evnt, option):
-        # print(option)
+        print("Alfaveto", option)
         if(option == 0):
             self.cipher.setAlfabeto('EN')
         elif(option == 1):
             self.cipher.setAlfabeto('ES')
+        elif(option == 2):
+            self.cipher.setAlfabeto('ASCII')
 
     def generateKey_functionVig(self, input_widget):
         # print("V")
@@ -219,7 +221,7 @@ class GUI():
         self.destroyDynamicWidgets()
         self.addSpaceWidget()
         comboboxAlfabeto = ttk.Combobox(self.frame, state="readonly")
-        comboboxAlfabeto['values'] = ['English', 'Spanish']
+        comboboxAlfabeto['values'] = ['English', 'Spanish', 'ASCII']
         comboboxAlfabeto.current(0)
         self.set_alphabet(None, 0)
         comboboxAlfabeto.pack()
@@ -303,7 +305,7 @@ class GUI():
         self.destroyDynamicWidgets()
         self.addSpaceWidget()
         comboboxAlfabeto = ttk.Combobox(self.frame, state="readonly")
-        comboboxAlfabeto['values'] = ['English', 'Spanish']
+        comboboxAlfabeto['values'] = ['English', 'Spanish', 'ASCII']
         comboboxAlfabeto.current(0)
         self.set_alphabet(None, 0)
         comboboxAlfabeto.pack()
@@ -380,7 +382,7 @@ class GUI():
         self.destroyDynamicWidgets()
         self.addSpaceWidget()
         comboboxAlfabeto = ttk.Combobox(self.frame, state="readonly")
-        comboboxAlfabeto['values'] = ['English', 'Spanish']
+        comboboxAlfabeto['values'] = ['English', 'Spanish', 'ASCII']
         comboboxAlfabeto.current(0)
         self.set_alphabet(None, 0)
         comboboxAlfabeto.pack()
@@ -434,7 +436,7 @@ class GUI():
         self.destroyDynamicWidgets()
         self.addSpaceWidget()
         comboboxAlfabeto = ttk.Combobox(self.frame, state="readonly")
-        comboboxAlfabeto['values'] = ['English', 'Spanish']
+        comboboxAlfabeto['values'] = ['English', 'Spanish', 'ASCII']
         comboboxAlfabeto.current(0)
         self.set_alphabet(None, 0)
         comboboxAlfabeto.pack()
@@ -526,8 +528,6 @@ class GUI():
             messagebox.showinfo(
                 message="Error with the key", title="Error"
             )
-
-    # TODO: decifrar
 
     def decrypt(self, key, path):
         decrypted = self.cipher.decrypt(key, self.cipher.readFile(path))
