@@ -180,7 +180,7 @@ class GUI():
         self.dynamic_widgets.append(label_space)
 
     def set_alphabet(self, evnt, option):
-        print("Alfaveto", option)
+        #print("Alfabeto", option)
         if(option == 0):
             self.cipher.setAlfabeto('EN')
         elif(option == 1):
@@ -191,7 +191,7 @@ class GUI():
     def generateKey_functionVig(self, input_widget):
         # print("V")
         key = self.cipher.generateKey()
-        print(key)
+        # print(key)
         if(key != None):
             self.setInputText(input_widget, key)
         else:
@@ -202,10 +202,10 @@ class GUI():
     def generateKey_functionAff(self, input_corr, input_mult):
         # print("A")
         keys = self.cipher.generateKey()
-        print(keys)
+        # print(keys)
 
         if(keys != None):
-            print(keys)
+            # print(keys)
             self.setInputText(input_mult, str(keys[0]))
             self.setInputText(input_corr, str(keys[1]))
         else:
@@ -371,7 +371,7 @@ class GUI():
 
     def generateEncryptWidgets(self):
         self.destroyDynamicWidgets()
-        print(self.option_cipher)
+        # print(self.option_cipher)
         self.addSpaceWidget()
         if(self.option_cipher == 1):
             self.encryptWidgetsVig()
@@ -503,7 +503,7 @@ class GUI():
 
     def generateDecryptWidgets(self):
         self.destroyDynamicWidgets()
-        print(self.option_cipher)
+        #print(self.option_cipher)
         self.addSpaceWidget()
         if(self.option_cipher == 1):
             self.decryptWidgetsVig()
@@ -513,12 +513,17 @@ class GUI():
     def pathFile(self):
         self.path_message = filedialog.askopenfilename()
         self.choose_file = True
-        print("Archivo seleccionado")
+        # print(self.path_message)
+        #print("Archivo seleccionado")
 
     def encrypt(self, keys):
         encrypted = self.cipher.encrypt(keys, self.plaintext)
         if(encrypted != None):
-            file_name = "message_encrypted"
+            file_name = str(self.path_message).split("/")
+            file_name = file_name[-1]
+            file_name = file_name.split(".")
+            file_name = file_name[0]
+            file_name += "_encrypted"
             if self.option_cipher == 1:
                 file_name += ".vig"
             elif self.option_cipher == 2:
@@ -531,7 +536,11 @@ class GUI():
 
     def decrypt(self, key, path):
         decrypted = self.cipher.decrypt(key, self.cipher.readFile(path))
-        file_name = "message_decrypted"
+        file_name = str(self.path_message).split("/")
+        file_name = file_name[-1]
+        file_name = file_name.split(".")
+        file_name = file_name[0]
+        file_name = file_name.replace("_encrypted", "_decrypted")
         if self.option_cipher == 1:
             file_name += ".vig"
         elif self.option_cipher == 2:

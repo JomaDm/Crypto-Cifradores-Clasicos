@@ -40,5 +40,6 @@ def modinv(a, m):
 
 
 if __name__ == '__main__':
+    
     for i in range(26):
         print(f"from i: {i}  {validate_key(i, 26)} {modinv(i, 26)}")
