@@ -9,7 +9,7 @@ from aff_cipher import AffineCipher
 class GUI():
 
     HEIGHT = 300
-    WIDTH = 550
+    WIDTH = 600
     background_color = "#23262E"
     white = "#fff"
     select_color = "#7A5FEE"
@@ -199,9 +199,11 @@ class GUI():
                 message="Alphabet not especified", title="Error"
             )
 
-    def generateKey_functionAff(self, input_corr, input_mult):
+    def generateKey_functionAff(self, input_corr, input_mult, n=-1):
         # print("A")
         keys = self.cipher.generateKey()
+        if n != -1:
+            keys = self.cipher.generateKey(n=n)
         # print(keys)
 
         if(keys != None):
@@ -228,6 +230,18 @@ class GUI():
         comboboxAlfabeto.bind(
             "<<ComboboxSelected>>", lambda event: self.set_alphabet(event, comboboxAlfabeto.current()))
         self.dynamic_widgets.append(comboboxAlfabeto)
+        label_n = Label(self.frame,
+                        text="N = ",
+                        fg=self.white,
+                        bg=self.background_color,
+                        font=("Arial", 14)
+                        )
+        label_n.pack()
+        self.dynamic_widgets.append(label_n)
+
+        input_n = Entry(self.frame)
+        input_n.pack()
+        self.dynamic_widgets.append(input_n)
 
         label_key_a = Label(self.frame,
                             text="Key shifter",
@@ -266,7 +280,8 @@ class GUI():
                                 bg=self.select_color,
                                 font=("Arial", 12),
                                 command=lambda: self.generateKey_functionAff(
-                                    input_key_corr, input_key_mult
+                                    input_key_corr, input_key_mult, n=int(
+                                        input_n.get())
                                 )
                                 )
         generateKeyBtn.pack()
@@ -294,7 +309,7 @@ class GUI():
                             bg=self.select_color,
                             font=("Arial", 12),
                             command=lambda: self.encrypt(
-                                [int(input_key_mult.get()), int(input_key_corr.get())])
+                                [int(input_key_mult.get()), int(input_key_corr.get())], int(input_n.get()))
                             )
         EncryptBtn.pack()
         self.dynamic_widgets.append(EncryptBtn)
@@ -444,6 +459,19 @@ class GUI():
             "<<ComboboxSelected>>", lambda event: self.set_alphabet(event, comboboxAlfabeto.current()))
         self.dynamic_widgets.append(comboboxAlfabeto)
 
+        label_n = Label(self.frame,
+                        text="N = ",
+                        fg=self.white,
+                        bg=self.background_color,
+                        font=("Arial", 14)
+                        )
+        label_n.pack()
+        self.dynamic_widgets.append(label_n)
+
+        input_n = Entry(self.frame)
+        input_n.pack()
+        self.dynamic_widgets.append(input_n)
+
         label_key_a = Label(self.frame,
                             text="Key shifter",
                             fg=self.white,
@@ -503,7 +531,7 @@ class GUI():
 
     def generateDecryptWidgets(self):
         self.destroyDynamicWidgets()
-        #print(self.option_cipher)
+        # print(self.option_cipher)
         self.addSpaceWidget()
         if(self.option_cipher == 1):
             self.decryptWidgetsVig()
@@ -516,8 +544,12 @@ class GUI():
         # print(self.path_message)
         #print("Archivo seleccionado")
 
-    def encrypt(self, keys):
-        encrypted = self.cipher.encrypt(keys, self.plaintext)
+    def encrypt(self, keys, n=-1):
+        encrypt = ""
+        if(n == -1):
+            encrypted = self.cipher.encrypt(keys, self.plaintext)
+        else:
+            encrypted = self.cipher.encrypt(keys, self.plaintext, n=n)
         if(encrypted != None):
             file_name = str(self.path_message).split("/")
             file_name = file_name[-1]

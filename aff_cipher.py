@@ -16,9 +16,12 @@ class AffineCipher():
     def __init__(self):
         print('Initialized Affine Cipher')
 
-    def generateKey(self):
+    def generateKey(self, n=-1):
         if self.alfabeto != []:
+
             alfabeto_length = len(self.alfabeto)
+            if(n != -1):
+                alfabeto_length = n
             key_mult = rand.randint(0, alfabeto_length-1)
             while not validate_key(key_mult, alfabeto_length):
                 print("Generating key...")
@@ -43,19 +46,22 @@ class AffineCipher():
     def validateKey(self, key):
         return validate_key(key, len(self.alfabeto))
 
-    def encrypt(self, keys, message):
+    def encrypt(self, keys, message, n=-1):
         if self.alfabeto != []:
             if self.validateKey(keys[0]):
                 mult = keys[0]
                 cor = keys[1]
 
-                encrypted = []
+                tam_alf = len(self.alfabeto)
 
+                if(n == -1):
+                    tam_alf = len(self.alfabeto)
+                encrypted = []
                 # Obtiene el indice del mensajepi
                 for e in message:
 
                     formula = (mult*(self.alfabeto.index(e)) +
-                               cor) % len(self.alfabeto)
+                               cor) % tam_alf
                     # para agregar un elemento al final
                     encrypted.append(self.alfabeto[formula])
                     #print ('letra: ',e,EN.index(e))
@@ -70,17 +76,22 @@ class AffineCipher():
             print('Alphabet not specified')
             return None
 
-    def decrypt(self, keys, ciphertext):
+    def decrypt(self, keys, ciphertext, n=-1):
         if self.alfabeto != []:
-            mult_in = modinv(keys[0], len(self.alfabeto))
-            cor_in = len(self.alfabeto) - keys[1]
+            tam_alf = len(self.alfabeto)
+
+            if(n == -1):
+                tam_alf = len(self.alfabeto)
+
+            mult_in = modinv(keys[0], tam_alf)
+            cor_in = tam_alf - keys[1]
 
             desencrypted = []
 
             for e in ciphertext:
 
                 formula_inv = (mult_in*(self.alfabeto.index(e)+cor_in)
-                               ) % len(self.alfabeto)
+                               ) % tam_alf
                 desencrypted.append(self.alfabeto[formula_inv])
 
             plain_text = ''.join(desencrypted)
