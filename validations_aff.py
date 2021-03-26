@@ -1,6 +1,3 @@
-from file_manager import *
-
-
 def gcd_euclides(a, b):
     if(b == 0):
         return 0
@@ -40,6 +37,6 @@ def modinv(a, m):
 
 
 if __name__ == '__main__':
-    
+
     for i in range(26):
         print(f"from i: {i}  {validate_key(i, 26)} {modinv(i, 26)}")
